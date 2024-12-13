@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบลงเวลาการทำงาน</title>
+    <style>
+        body {
+            font-family: 'Star Jedi', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #ffe81f;
+        }
+        @font-face {
+            font-family: 'Star Jedi';
+            src: url('https://fonts.cdnfonts.com/s/6908/Starjedi.ttf') format('truetype');
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border: 1px solid #ffe81f;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
+            width: 300px;
+        }
+        .time {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #ffe81f;
+        }
+        label {
+            font-size: 1em;
+            margin-bottom: 10px;
+            display: block;
+            color: #ffe81f;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            border: 1px solid #ffe81f;
+            border-radius: 5px;
+            background: black;
+            color: #ffe81f;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            background: black;
+            color: #ffe81f;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .button:hover {
+            background: #ffe81f;
+            color: black;
+            transform: scale(1.05);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- หน้าหลัก -->
+    <div class="container" id="mainContainer">
+        <div class="time" id="currentTime">08:15 AM</div>
+        <label for="employeeCode">กรอกรหัสพนักงาน</label>
+        <input type="text" id="employeeCode" placeholder="รหัสพนักงาน">
+        <button class="button" onclick="submitTime()">ลงเวลา</button>
+        <button class="button" onclick="goBack()">ย้อนกลับ</button>
+    </div>
+
+    <!-- หน้าสรุปการลงเวลา -->
+    <div class="container hidden" id="summaryContainer">
+        <div class="time" id="summaryTime">08:15 AM</div>
+        <div>ยืนยันการลงเวลา</div>
+        <div id="employeeIdDisplay" style="font-size: 1.2em; margin-top: 10px; color: #ffe81f;"></div>
+        <button class="button" onclick="goBack()">ย้อนกลับ</button>
+    </div>
+
+    <script>
+        // อัปเดตเวลาปัจจุบันแบบเรียลไทม์
+        function updateTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const isAM = hours < 12;
+            hours = hours % 12 || 12;
+            const timeString = `${hours}:${minutes} ${isAM ? 'AM' : 'PM'}`;
+
+            document.getElementById('currentTime').textContent = timeString;
+            document.getElementById('summaryTime').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // เรียกใช้งานครั้งแรกทันที
+
+        // ฟังก์ชันเมื่อกดปุ่ม "ลงเวลา"
+        function submitTime() {
+            const employeeCode = document.getElementById('employeeCode').value;
+            if (!employeeCode) {
+                alert('กรุณากรอกรหัสพนักงาน');
+                return;
+            }
+
+            // แสดงหน้าสรุป
+            document.getElementById('mainContainer').classList.add('hidden');
+            document.getElementById('summaryContainer').classList.remove('hidden');
+
+            // แสดงรหัสพนักงาน
+            document.getElementById('employeeIdDisplay').textContent = employeeCode;
+        }
+
+        // ฟังก์ชันกลับไปหน้าหลัก
+        function goBack() {
+            document.getElementById('summaryContainer').classList.add('hidden');
+            document.getElementById('mainContainer').classList.remove('hidden');
+
+            // ล้างข้อมูลใน input
+            document.getElementById('employeeCode').value = '';
+        }
+    </script>
+</body>
+</html>
